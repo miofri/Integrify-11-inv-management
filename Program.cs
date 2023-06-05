@@ -151,14 +151,22 @@ public class Inventory
         currentInventoryQuantity -= newQuantity;
         _items[findItem].DecreaseQuantity(newQuantity);
         Console.WriteLine("Item quantity has been decreased!");
+        return true;
+    }
 
+    public void ViewInventory()
+    {
         foreach (var listitem in _items)
         {
             Console.WriteLine(
-                $"{listitem.GetItemName} {listitem.GetBarcode} {listitem.GetQuantity}"
+                $"Barcode: {listitem.GetBarcode} Name: {listitem.GetItemName} Quantity: {listitem.GetQuantity}"
             );
         }
-        return true;
+    }
+
+    ~Inventory()
+    {
+        Console.WriteLine("Inventory has been destroyed.");
     }
 }
 
@@ -180,5 +188,6 @@ public class Program
         Inventory.RemoveItem("9ABC");
         Inventory.IncreaseQuantity(3, "3ABC");
         Inventory.DecreaseQuantity(2, "3ABC");
+        Inventory.ViewInventory();
     }
 }
