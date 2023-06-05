@@ -13,14 +13,14 @@ public class Item
         _quantity = quantity;
     }
 
-    public void IncreaseQuantity()
+    public void IncreaseQuantity(int quantity)
     {
-        _quantity += 1;
+        _quantity += quantity;
     }
 
-    public void DecreaseQuantity()
+    public void DecreaseQuantity(int quantity)
     {
-        _quantity -= 1;
+        _quantity -= quantity;
     }
 
     public string GetItemName
@@ -83,13 +83,6 @@ public class Inventory
             Console.WriteLine("Added item");
         }
         currentInventoryQuantity = currentInventoryQuantity + quantity;
-
-        foreach (var listitem in _items)
-        {
-            Console.WriteLine(
-                $"{listitem.GetItemName} {listitem.GetBarcode} {listitem.GetQuantity}"
-            );
-        }
         return true;
     }
 
@@ -114,6 +107,59 @@ public class Inventory
         }
         return true;
     }
+
+    public bool IncreaseQuantity(int newQuantity, string newBarcode)
+    {
+        int findItem;
+        if (!_items.Any(item => item.GetBarcode == newBarcode))
+        {
+            Console.WriteLine("Barcode not found in inventory!");
+            return false;
+        }
+        try
+        {
+            findItem = _items.FindIndex(item => item.GetBarcode == newBarcode);
+        }
+        catch (ArgumentNullException)
+        {
+            Console.WriteLine("Item not found in inventory!");
+            return false;
+        }
+        currentInventoryQuantity += newQuantity;
+        _items[findItem].IncreaseQuantity(newQuantity);
+        Console.WriteLine("Item quantity has been increased!");
+        return true;
+    }
+
+    public bool DecreaseQuantity(int newQuantity, string newBarcode)
+    {
+        int findItem;
+        if (!_items.Any(item => item.GetBarcode == newBarcode))
+        {
+            Console.WriteLine("Barcode not found in inventory!");
+            return false;
+        }
+        try
+        {
+            findItem = _items.FindIndex(item => item.GetBarcode == newBarcode);
+        }
+        catch (ArgumentNullException)
+        {
+            Console.WriteLine("Item not found in inventory!");
+            return false;
+        }
+        currentInventoryQuantity -= newQuantity;
+        _items[findItem].DecreaseQuantity(newQuantity);
+        Console.WriteLine("Item quantity has been decreased!");
+
+        foreach (var listitem in _items)
+        {
+            Console.WriteLine(
+                $"{listitem.GetItemName} {listitem.GetBarcode} {listitem.GetQuantity}"
+            );
+        }
+        return true;
+    }
 }
 
 public class Program
@@ -129,7 +175,10 @@ public class Program
         Inventory.AddItem(NewItem, NewItem.GetQuantity);
         Inventory.AddItem(NewItem2, NewItem2.GetQuantity);
         Inventory.AddItem(NewItem3, NewItem3.GetQuantity);
+        NewItem.IncreaseQuantity(3);
         Inventory.AddItem(NewItem3, NewItem3.GetQuantity);
         Inventory.RemoveItem("9ABC");
+        Inventory.IncreaseQuantity(3, "3ABC");
+        Inventory.DecreaseQuantity(2, "3ABC");
     }
 }
